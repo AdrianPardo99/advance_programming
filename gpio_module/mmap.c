@@ -1,35 +1,39 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <stdint.h>
 #include <unistd.h>
-#include <string.h>
-#include <stdlib.h>
-#include <errno.h>
-#include <fcntl.h>
 #include <sys/mman.h>
-#include <errno.h>
-#include "mapgpio.h"
 
-extern volatile uint32_t *gpio;
+/*
+ *
+ * @author Adrian González Pardo
+ * @date   28/04/2021
+ * @email  gozapaadr@gmail.com
+ * @github AdrianPardo99
+ *
+**/
 
 /* GPIO controller for raspberry 4 */
 #define GPIO_BASE_PI4 0xfe200000
 /* GPIO controller for raspberry 3 */
 #define GPIO_BASE_PI3 0x3f200000
 
-/* Para habilitar el GPIO #  */
-#define INP_GPIO(g) *(gpio+((g)/10)) &= ~(7<<(((g)%10)*3))
-/* Habilita el PIN para la salida */
-#define OUT_GPIO(g) *(gpio+((g)/10)) |=  (1<<(((g)%10)*3))
-/* Habilita el PIN de manera alterna */
-#define SET_GPIO_ALT(g,a) *(gpio+(((g)/10))) |= (((a)<=3?(a)+4:(a)==4?3:2)<<(((g)%10)*3))
-/* Cambia el PIN a 1 lógico, entrada es 1<<(gpio) */
-#define GPIO_SET *(gpio+7)
-/* Cambia el PIN a 0 lógico, entrada 1<<(gpio) */
-#define GPIO_CLR *(gpio+10)
-/* Verifica si el gpio es un valor 0 o 1 lógico */
-#define GET_GPIO(g) (*(gpio+13)&(1<<g)) // 0 if LOW, (1<<g) if HIGH
+void config_gpio(volatile uint32_t *gpio,int v_gpio,int mode){
+  int GPFSEL=v_gpio/10,
+      range=(v_gpio%10);
+  range=(range<<1)+range;
+  if(mode==0){
+    /*
+     * As Output
+    **/
+    *(gpio+GPFSEL)=(*(gpio+GPFSEL)&~(7<<range))|(1<<range);
+  }else{
+    /*
+     * As input
+    **/
+    *(gpio+GPFSEL)=(*(gpio+GPFSEL)&~(7<<range));
+  }
+}
 
 uint32_t *create_offset_gpio(int fd,int base){
     return (uint32_t *)mmap(
@@ -40,6 +44,24 @@ uint32_t *create_offset_gpio(int fd,int base){
       fd,
       (base==0)?(GPIO_BASE_PI3):(GPIO_BASE_PI4)
     );
+}
+
+void value_gpio(volatile uint32_t *gpio,int v_gpio,int val){
+  int bit=(v_gpio>>5)&1,
+      GPSET_CLR;
+  if(val==0){
+    /*
+     * As clr the value of gpio
+    **/
+    GPSET_CLR=bit+10;
+  }else{
+    /*
+     * As set the value of gpio 1
+    **/
+    GPSET_CLR=bit+7;
+  }
+  *(gpio+GPSET_CLR)=(1<<(v_gpio%32));
+
 }
 
 int *character_to_led(char x){
@@ -110,15 +132,4 @@ int *character_to_led(char x){
     arr[('Z'-x)+9]=1;
   }
   return arr;
-}
-
-void set_gpio(int *gp,int *vals,int a){
-  register int i;
-  for(i=0;i<a;i++){
-    if(vals[i]==0){
-      GPIO_CLR=1<<gp[i];
-    }else{
-      GPIO_SET=1<<gp[i];
-    }
-  }
 }
