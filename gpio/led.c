@@ -74,15 +74,24 @@ int main(void){
   }
   printf("La direccion virtual es: %x\n", gpio);
   /* Se configura el BCM GPIO16 como salida */
-  INP_GPIO(16);
-  OUT_GPIO(16);
+  int arr[]={5,1,12,6,13,19,26,16,20,21};
+  register int i;
+  for(i=0;i<10;i++){
+    INP_GPIO(arr[i]);
+    OUT_GPIO(arr[i]);
+  }
   while(c<CICLOS){
     /* Se pone en uno el GPIO 16 */
-    GPIO_SET=1<<16;
-    sleep(2);
+    for(i=0;i<10;i++){
+      GPIO_SET=1<<arr[i];
+      usleep(500000/2);
+    }
+
     /* Se pone en cero el GPIO 16 */
-    GPIO_CLR=1<<16;
-    sleep(2);
+    for(i=0;i<10;i++){
+      GPIO_CLR=1<<arr[i];
+      usleep(500000/2);
+    }
     c++;
   }
   close(fd);
