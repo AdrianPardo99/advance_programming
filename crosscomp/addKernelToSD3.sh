@@ -4,7 +4,11 @@ BOOT="mmcblk0p1"
 ROOTFS="mmcblk0p2"
 KERNEL=kernel7
 cd ~/linux
-mkdir -p mnt/boot mnt/rootfs
+if [ ! -d ~/linux/mnt ];then
+  mkdir -p mnt/boot mnt/rootfs
+elif [ ! -d ~/linux/mnt/boot ];then
+  mkdir -p mnt/boot mnt/rootfs
+fi
 sudo umount /dev/${BOOT}
 sudo umount /dev/${ROOTFS}
 sudo mount /dev/${BOOT} mnt/boot
