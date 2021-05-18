@@ -139,6 +139,7 @@ void seven_seg_number(char x,int *arr){
   for(i=0;i<7;i++){
     *(arr+i)=0;
   }
+  printf("Number %c\t|",x);
   if(x=='0'){
     for(i=0;i<6;i++){
       *(arr+i)=1;
