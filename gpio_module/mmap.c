@@ -133,3 +133,45 @@ int *character_to_led(char x){
   }
   return arr;
 }
+
+void seven_seg_number(char x,int *arr){
+  register int i;
+  for(i=0;i<7;i++){
+    *(arr+i)=0;
+  }
+  if(x=='0'){
+    for(i=0;i<6;i++){
+      *(arr+i)=1;
+    }
+  }else if(x=='1'){
+    *(arr+1)=*(arr+2)=1
+  }else if(x=='2'){
+    *(arr)=*(arr+1)=*(arr+3)=*(arr+4)=*(arr+6)=1;
+  }else if(x=='3'){
+    for(i=0;i<4;i++){
+      *(arr+i)=1;
+    }
+    *(arr+6)=1;
+  }else if(x=='4'){
+    *(arr+1)=*(arr+2)=*(arr+5)=*(arr+6)=1;
+  }else if(x=='5'){
+    *(arr)=*(arr+2)=*(arr+3)=*(arr+5)=*(arr+6)=1;
+  }else if(x=='6'){
+    for(i=2;i<7;i++){
+      *(arr+i)=1;
+    }
+    *(arr)=1;
+  }else if(x=='7'){
+    *(arr)=*(arr+1)=*(arr+2)=1;
+  }else if(x=='8'){
+    for(i=0;i<7;i++){
+      *(arr+i)=1;
+    }
+  }else if(x=='9'){
+    for(i=0;i<4;i++){
+      *(arr+i)=1;
+    }
+    *(arr+5)=*(arr+6)=1;
+  }
+
+}

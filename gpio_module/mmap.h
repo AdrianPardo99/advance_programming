@@ -44,4 +44,13 @@ void value_gpio(volatile uint32_t*,int,int);
  *  include space in ascii
 **/
 int *character_to_led(char);
+
+/*
+ * @brief: Create character to array that size 7 bits
+ * @args:
+ *    char indicate the caracter between 0 to 9,
+ *      include space in ascii
+ *    int is array where store the data
+**/
+void seven_seg_number(char,int*);
 #endif
