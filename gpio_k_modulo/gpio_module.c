@@ -116,7 +116,7 @@ static int hilo_kernel(void *data){
 	while( !kthread_should_stop()){
     if(des==1){
       i=0;
-      printk(KERN_INFO "Boleta: %s",boleta);
+      printk(KERN_INFO "Boleta: %s\n",boleta);
       while(boleta[i]){
         seven_seg_number(boleta[i],&*segment);
         for(j=0;j<7;j++){
@@ -125,6 +125,7 @@ static int hilo_kernel(void *data){
         ssleep(1);
         i++;
       }
+      printk(KERN_INFO"Fin de escritura de Boleta: %s\n",boleta);
       des=0;
     }
     for(j=0;j<7;j++){
@@ -145,7 +146,7 @@ static int hilo_kernel(void *data){
 static int __init kernel_init(void){
 	static int id_thread = 10;
   register int i;
-	printk( KERN_INFO "\n--------------------------------------------\n" );
+	printk( KERN_INFO "--------------------------------------------\n" );
    	khilo = kthread_create( hilo_kernel, (void *)&id_thread, "kmi_hilo" );
 
 	if(IS_ERR(khilo)){
@@ -180,6 +181,7 @@ static void __exit kernel_exit(void){
 		printk( KERN_INFO "Hilo de Kernel con id: %d detenido\n", ret_hilo_kernel );
 	}
 	iounmap( gpio_virtual );
+  printk( KERN_INFO "--------------------------------------------\n" );
 }
 
 module_init(kernel_init);
