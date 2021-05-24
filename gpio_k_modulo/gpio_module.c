@@ -25,7 +25,7 @@ MODULE_PARM_DESC(des,"Opción: 1 Muestra en display");
 
 struct task_struct *khilo;
 volatile uint32_t *gpio_virtual;
-int arr_gpio[]={6,13,19,26,16,20,21},size=7,segment[7];
+int arr_gpio[]={17,18,27,22,23,24,10},size=7,segment[7];
 
 void config_gpio(volatile uint32_t *gpio,int v_gpio,int mode){
   int GPFSEL=v_gpio/10,
@@ -117,11 +117,15 @@ static int hilo_kernel(void *data){
     if(des==1){
       i=0;
       printk(KERN_INFO "Boleta: %s\n",boleta);
+      printk(KERN_INFO"Posicion[]\t#\tSegmento de bits\n");
       while(boleta[i]){
         seven_seg_number(boleta[i],&*segment);
         for(j=0;j<7;j++){
           value_gpio(gpio_virtual,arr_gpio[j],segment[j]);
         }
+        printk(KERN_INFO"boleta[%d]\t%c\t|%d|%d|%d|%d|%d|%d|%d|\n",
+          i,boleta[i],segment[0],segment[1],segment[2],segment[3],segment[4],
+          segment[5],segment[6]);
         ssleep(1);
         i++;
       }
@@ -182,6 +186,7 @@ static void __exit kernel_exit(void){
 	}
 	iounmap( gpio_virtual );
   printk( KERN_INFO "--------------------------------------------\n" );
+  printk(KERN_INFO"Bye bye");
 }
 
 module_init(kernel_init);
