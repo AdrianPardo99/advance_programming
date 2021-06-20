@@ -13,7 +13,7 @@
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Adrian González Pardo, Samuel Alejandro Jurado Macias,"
   " Raymundo Pulido Bejarano");
-MODULE_DESCRIPTION("Hilo de kernel con GPIO a 7 segmentos con funciones callback");
+MODULE_DESCRIPTION("GPIO a 7 segmentos con funciones callback");
 MODULE_VERSION("1.0");
 
 
@@ -102,6 +102,7 @@ static char boleta[N]="2015140309";
 
 int set_boleta(const char *v,const struct kernel_param *k){
   int len=strlen(v);
+  register int i=0,j=0;
   printk(KERN_INFO"Callback 'set' boleta\n");
   if(len>N){
     printk(KERN_ERR"Error the string it's too large\n");
@@ -112,7 +113,6 @@ int set_boleta(const char *v,const struct kernel_param *k){
   }
   strcpy(k->arg,v);
   printk(KERN_INFO"Param set: %s\n",boleta);
-  register int i=0,j=0;
   printk(KERN_INFO "Boleta: %s\n",boleta);
   printk(KERN_INFO"Posicion[]\t#\tSegmento de bits\n");
   while(boleta[i]){
