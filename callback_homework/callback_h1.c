@@ -48,7 +48,6 @@ int set_irq(const char *v,const struct kernel_param *k){
         printk(KERN_INFO"\tPar[%d]=%d\n",i,pares[i]);
       }
     }
-    irq=0;
   }
   return ret;
 }

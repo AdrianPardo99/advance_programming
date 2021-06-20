@@ -21,12 +21,19 @@ begin
     boleta=cliente.gets.chomp
     if !boleta.empty?
       puts "Boleta a escribir en el modulo: #{boleta}"
-      File.open("/sys/module/#{km}/parameters/boleta", "w") {|f|
-        f.write "#{boleta}"
-      }
-      if !km.include?("_cb")
-        File.open("/sys/module/#{km}/parameters/des", "w") {|f|
-          f.write "1"
+      if !km.include?("_ddc")
+        File.open("/sys/module/#{km}/parameters/boleta", "w") {|f|
+          f.write "#{boleta}"
+        }
+        if !km.include?("_cb")
+          File.open("/sys/module/#{km}/parameters/des", "w") {|f|
+            f.write "1"
+          }
+        end
+      end
+      if km.include?("_ddc")
+        File.open("/dev/GPIO_device","w"){|f|
+          f.write "#{boleta}"
         }
       end
     end
